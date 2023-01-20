@@ -1,16 +1,18 @@
 # korean_NLI_baseline
 
-본 소스코드는 '국립국어원 상시평가'의 자연어 추론(Natural Language Inference)의 베이스라인 모델 및 학습과 평가를 위한 코드를 제공하고 있습니다. 
+본 소스 코드는 '확신성_추론' 과제를 위한 베이스라인 모델 및 학습과 평가를 위한 코드입니다.
 
-코드는 'nli_main.py'이고, 'train.sh' 을 이용하면 학습에 용이하고, 학습된 모델을 이용하여 'demo.sh'를 이용하여 결과를 생성 한 뒤 'test.sh'를 실행하여 결과물에 대한 평가를 할 수 있습니다.
+코드는 'nli_main.py'이며 ' train.sh'를 이용하여 학습할 수 있습니다. 또 'demo.sh' 를 학습된 모델에 활용하여 결과를 생성한 뒤, 'test.sh'를 실행하면 결과물에 대한 평가를 할 수 있습니다.
 
 
 
 ## 데이터
-데이터는 국립국어원 모두의 말뭉치에서 다운받으실 수 있습니다. https://corpus.korean.go.kr/
-모순 중립 함의의 정도를 1 부터 7까지의 실수로 표현되어있습니다. (1이 모순, 4가 중립, 7이 함의)
+확신성 추론 데이터 세트의 output은 1에서 7사이의 실수로 표현되어 있습니다. context를 고려하였을 때 작성자가 prompt가 참이라고 확신하는 경우 7점(함의), prompt가 거짓이라고 확신하는 경우 1점을 부여합니다(모순). 즉, 작성자가 prompt에 대해 확신하는 정도를 1점부터 7점까지로 표현한 데이터 세트입니다.
 
-#### example
+
+과제 데이터 세트는 국립국어원 인공 지능의 언어 능력 평가( https://corpus.korean.go.kr )에서 내려받을 수 있습니다.  
+
+#### 예시
 ``` 
 {"id": "nikluge-2022-nli-train-000001", "input": {"context": "준플레이오프가 5전3선승제로 바뀐 2008년 이후 하위팀이 상위팀을 두 번이나 꺾고 한국시리즈에 오른 것은 두산이 처음이다. 두산은 마지막 우승이었던 지난 2001년에도 준플레이오프부터 시리즈를 시작해 한국시리즈 우승을 차지한 바 있다. 두산은 마지막 우승 당시 한국시리즈 상대가 삼성이었음을 기억하고 있을 것이다.", "prompt": "두산의 마지막 우승 당시의 한국시리즈 상대는 삼성이었다."}, "output": "6.375"}
 {"id": "nikluge-2022-nli-train-000002", "input": {"context": "그렇다. 김대중 전 대통령이 북한과 협상할 때 강조하는 '모개흥정'과 닮은꼴이다. 그러나 그가 정치인 김대중의 비서 출신이고 국민의 정부에서 청와대 정무비서관과 국정상황실장을 지냈음을 기억하면 별로 새삼스러운 일도 아니다.", "prompt": "그는 정치인 김대중의 비서 출신이고 국민의 정부에서 청와대 정무비서관과 국정상황실장을 지냈다."}, "output": "6.75"}
@@ -30,22 +32,22 @@
 ```
 
 #### 데이터 전처리
-모델을 학습하기 위한 데이터 전처리는 소스코드의 tokenize_and_align_labels(tokenizer, form, value, max_len) 함수와 get_dataset(raw_data, tokenizer, max_len) 함수를 참고하시면 됩니다. tokenize_and_align_labels에서 원하는 형태의 데이터 형태로 가공하고, get_dataset에서 pytorch의 DataLoader를 이용하기 위한 TensorDataset 형태로 가공합니다.
+모델을 학습하기 위한 데이터 전처리는 소스코드의 tokenize_and_align_labels(tokenizer, form, value, max_len) 함수와 get_dataset(raw_data, tokenizer, max_len) 함수를 참고하시면 됩니다. tokenize_and_align_labels에서 데이터 형태를 1차 가공하고 get_dataset에서 pytorch의 DataLoader를 이용하기 위한 TensorDataset 형태로 가공합니다.
 
 
 ## 모델 구성
 
-xlm-roberta-base(https://huggingface.co/xlm-roberta-base)를 기반으로 학습하였습니다.
+xlm-roberta-base( https://huggingface.co/xlm-roberta-base )를 기반으로 학습하였습니다.
 
 모델 구조는 xlm-roberta-base 모델의 \<s> 토큰 output에 FFRegression을 붙인 형태의 모델입니다.
 
 학습된 baseline 모델은 아래 링크에서 받으실 수 있습니다.
 
-https://drive.google.com/file/d/1JFr4JpIbaT0sC2DETQVUiqUD5Kf_CS-g/view?usp=share_link
+모델 링크: https://drive.google.com/file/d/1JFr4JpIbaT0sC2DETQVUiqUD5Kf_CS-g/view?usp=share_link
 
-모델 입력형태를 \<s>context\</s>\</s>prompt\</s>와 같이하고, 함의인지 모순인지 하나의 실수를 output으로 나타나게 합니다.
+모델 입력 형태는 '\<s>context\</s>\</s>prompt\</s>'이며 확신성 추론 결과에 해당하는 실수를 output으로 나타냅니다. 
 
-입력 예시
+####입력 예시
 ```
 <s>준플레이오프가 5전3선승제로 바뀐 2008년 이후 하위팀이 상위팀을 두 번이나 꺾고 한국시리즈에 오른 것은 두산이 처음이다. 두산은 마지막 우승이었던 지난 2001년에도 준플레이오프부터 시리즈를 시작해 한국시리즈 우승을 차지한 바 있다. 두산은 마지막 우승 당시 한국시리즈 상대가 삼성이었음을 기억하고 있을 것이다.</s></s>두산의 마지막 우승 당시의 한국시리즈 상대는 삼성이었다.</s>
 <s>그렇다. 김대중 전 대통령이 북한과 협상할 때 강조하는 '모개흥정'과 닮은꼴이다. 그러나 그가 정치인 김대중의 비서 출신이고 국민의 정부에서 청와대 정무비서관과 국정상황실장을 지냈음을 기억하면 별로 새삼스러운 일도 아니다.</s></s>그는 정치인 김대중의 비서 출신이고 국민의 정부에서 청와대 정무비서관과 국정상황실장을 지냈다.</s>
@@ -53,7 +55,7 @@ https://drive.google.com/file/d/1JFr4JpIbaT0sC2DETQVUiqUD5Kf_CS-g/view?usp=share
 ...
 ```
 
-출력 예시 - 0 or 1 (윤리 or 비윤리)
+####출력 예시 - 실수
 ```
 "6.375"
 "6.75"
@@ -61,16 +63,17 @@ https://drive.google.com/file/d/1JFr4JpIbaT0sC2DETQVUiqUD5Kf_CS-g/view?usp=share
 ...
 ```
 
-### 평가
+#### 평가
 baseline 코드에서 제공된 평가 코드로 평가하였을때, 아래와 같이 결과가 나왔습니다.
 
 train 과정에서 --do_eval을 argument로 전달하면 매 epoch마다 dev data에 대해 평가 결과를 보여줍니다.
 
 demo.sh을 이용하여 결과물을 추출한뒤 평가 데이터를 이용하여 test.sh와 같이 평가할 수 있습니다.
 
+모델을 이용하여 pred_data와 같은 형태의 데이터를 만들기 위한 방법은 demo.sh 파일을 참고하면 됩니다.
+
 평가함수는 evaluation(y_true, y_pred) 함수를 이용하면 되고, 입력 데이터는 아래와 같습니다.
 
-모델을 이용하여 pred_data와 같은 형태의 데이터를 만들기 위한 방법은 demo.sh 파일을 참고하면 됩니다.
 
 true_data
 ``` 
@@ -96,6 +99,6 @@ pred_data
 ## reference
 xlm-roberta-base in huggingface (https://huggingface.co/xlm-roberta-base)
 
-모두의말뭉치 in 국립국어원 (https://corpus.korean.go.kr/)
+국립국어원 인공 지능의 언어 능력 평가 (https://corpus.korean.go.kr/)
 ## Authors
 - 정용빈, Teddysum, ybjeong@teddysum.ai
