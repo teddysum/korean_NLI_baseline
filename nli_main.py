@@ -48,7 +48,7 @@ def jsonldump(j_list, fname):
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description="unethical expression classifier using pretrained model")
+    parser = argparse.ArgumentParser(description="natural language inference using pretrained model")
     parser.add_argument(
         "--train_data", type=str, default="../data/nikluge-au-2022-train.jsonl",
         help="train file"
@@ -200,11 +200,11 @@ def evaluation(y_true, y_pred):
     print('mean_squared_error: ', mean_squared_error(y_true, y_pred))
 
 
-def train_unethical_expression_classifier(args=None):
+def train_nli_expression_classifier(args=None):
     if not os.path.exists(args.model_path):
         os.makedirs(args.model_path)
 
-    print('train_unethical_expression_classifier')
+    print('train_nli_expression_classifier')
     print('model would be saved at ', args.model_path)
 
     print('loading train data')
@@ -310,7 +310,7 @@ def train_unethical_expression_classifier(args=None):
     print("training is done")
 
 
-def test_unethical_expression_classifier(args):
+def test_nli_expression_classifier(args):
 
     test_data = jsonlload(args.test_data)
     pred_data = jsonlload(args.pred_data)
@@ -339,7 +339,7 @@ def test_unethical_expression_classifier(args):
     evaluation(true_list, pred_list)
 
 
-def demo_unethical_expression_classifier(args):
+def demo_nli_expression_classifier(args):
     if not os.path.exists(args.output_dir):
         os.makedirs(args.output_dir)
 
@@ -372,8 +372,8 @@ if __name__ == '__main__':
     args = parse_args()
 
     if args.do_train:
-        train_unethical_expression_classifier(args)
+        train_nli_expression_classifier(args)
     elif args.do_demo:
-        demo_unethical_expression_classifier(args)
+        demo_nli_expression_classifier(args)
     elif args.do_test:
-        test_unethical_expression_classifier(args)
+        test_nli_expression_classifier(args)
