@@ -99,6 +99,6 @@ pred_data
 ## reference
 xlm-roberta-base in huggingface (https://huggingface.co/xlm-roberta-base)
 
-국립국어원 인공 지능의 언어 능력 평가 (https://corpus.korean.go.kr/)
+인공지능(AI)말평(kli.korean.go.kr/benchmark)
 ## Authors
 - 정용빈, Teddysum, ybjeong@teddysum.ai
