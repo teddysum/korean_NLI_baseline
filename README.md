@@ -10,7 +10,8 @@
 확신성 추론 데이터 세트의 output은 1에서 7사이의 실수로 표현되어 있습니다. context를 고려하였을 때 작성자가 prompt가 참이라고 확신하는 경우 7점(함의), prompt가 거짓이라고 확신하는 경우 1점을 부여합니다(모순). 즉, 작성자가 prompt에 대해 확신하는 정도를 1점부터 7점까지로 표현한 데이터 세트입니다.
 
 
-과제 데이터 세트는 국립국어원 인공 지능의 언어 능력 평가( https://corpus.korean.go.kr )에서 내려받을 수 있습니다.  
+평가에 사용되는 데이터는 참가 신청 후 각 과제 페이지 '자료 받기'에서 받으실 수 있습니다.
+
 
 #### 예시
 ``` 
@@ -99,6 +100,6 @@ pred_data
 ## reference
 xlm-roberta-base in huggingface (https://huggingface.co/xlm-roberta-base)
 
-인공지능(AI)말평(kli.korean.go.kr/benchmark)
+인공지능(AI)말평([kli.korean.go.kr/benchmark](https://kli.korean.go.kr/benchmark/home.do))
 ## Authors
 - 정용빈, Teddysum, ybjeong@teddysum.ai
